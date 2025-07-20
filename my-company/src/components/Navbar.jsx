@@ -1,94 +1,79 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import logo from '../assets/logo.png'; // Adjust path and filename
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <nav style={{
       backgroundColor: '#2c3e50',
-      padding: '1rem 2rem',
+      padding: '0.5rem 2rem',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
       position: 'sticky',
       top: 0,
-      zIndex: 100
+      zIndex: 1000
     }}>
-      
-      <div style={{
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-        color: 'white'
+      {/* Logo Section */}
+      <Link to="/" style={{
+        display: 'flex',
+        alignItems: 'center',
+        textDecoration: 'none'
       }}>
-        <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-          CompanyLogo
-        </Link>
-      </div>
+        <img 
+          src={logo} 
+          alt="Company Logo" 
+          style={{
+            height: '20px', // Adjust based on your logo
+            width: 'auto',
+            marginRight: '10px'
+          }} 
+        />
+        {/* Optional text beside logo */}
+        <span style={{
+          color: 'white',
+          fontSize: '1.5rem',
+          fontWeight: 'bold'
+        }}>
+        </span>
+      </Link>
 
-      
+      {/* Navigation Links */}
       <div style={{
         display: 'flex',
         gap: '2rem',
         alignItems: 'center'
       }}>
-        <Link 
-          to="/" 
-          style={navLinkStyle}
-          activeStyle={{ fontWeight: 'bold' }}
-        >
-          Home
-        </Link>
-        <Link 
-          to="/about" 
-          style={navLinkStyle}
-        >
-          About
-        </Link>
-        <Link 
-          to="/services" 
-          style={navLinkStyle}
-        >
-          Services
-        </Link>
-        <Link 
-          to="/contact" 
-          style={navLinkStyle}
-        >
-          Contact
-        </Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/about">About</NavLink>
+        <NavLink to="/services">Services</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
       </div>
-
-      {/* Mobile menu button (hidden on desktop) */}
-      <button 
-        style={{
-          display: 'none',
-          background: 'none',
-          border: 'none',
-          color: 'white',
-          fontSize: '1.5rem',
-          cursor: 'pointer'
-        }}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-      >
-        ☰
-      </button>
     </nav>
   );
 }
 
-// Style object for nav links
-const navLinkStyle = {
-  color: 'white',
-  textDecoration: 'none',
-  fontSize: '1.1rem',
-  transition: 'all 0.3s ease',
-  padding: '0.5rem 0',
-  borderBottom: '2px solid transparent',
-  ':hover': {
-    borderBottom: '2px solid white'
-  }
-};
+// Reusable NavLink component for consistent styling
+function NavLink({ to, children }) {
+  return (
+    <Link 
+      to={to}
+      style={{
+        color: 'white',
+        textDecoration: 'none',
+        fontSize: '1.1rem',
+        fontWeight: '500',
+        padding: '0.5rem 0',
+        borderBottom: '2px solid transparent',
+        transition: 'all 0.3s ease',
+        ':hover': {
+          borderBottom: '2px solid #3498db'
+        }
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 export default Navbar;
