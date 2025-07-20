@@ -1,7 +1,8 @@
 import Header from './components/Header';
 import MainContent from './components/MainContent';
 import Footer from './components/Footer';
-import UserProfile from './components/UserProfile'; // 👈 New import
+import UserProfile from './components/UserProfile'; 
+import Counter from './components/Counter'; 
 
 function App() {
   return (
@@ -10,15 +11,17 @@ function App() {
       <MainContent />
 
       <UserProfile
-        name= "Brian"
+        name="Brian"
         age="28"
         bio="Future full-stack dev & frontend master"
-        />
+      />
       <UserProfile
         name="Alice"
         age="25"
         bio="Loves hiking and photography"
       />
+
+      <Counter />  
 
       <Footer />
     </>
