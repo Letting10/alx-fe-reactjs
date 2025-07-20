@@ -13,7 +13,7 @@ function About() {
         fontSize: '1.1em'
       }}>
         <p>
-          Founded in 1990, our company has been at the forefront of innovation in technology 
+          Founded in 2025, our company has been at the forefront of innovation in technology 
           and business solutions. What started as a small team of passionate individuals has 
           grown into a multinational corporation serving clients across the globe.
         </p>
@@ -23,7 +23,7 @@ function About() {
           delivering exceptional value and outstanding results.
         </p>
         <p>
-          With over 30 years of experience, we've helped thousands of businesses transform 
+          With over 5 Months of experience, we've helped thousands of businesses transform 
           their operations and achieve their goals. Our team consists of industry experts 
           with diverse backgrounds in technology, marketing, and business strategy.
         </p>
