@@ -1,22 +1,18 @@
 import { create } from 'zustand';
 
-const useRecipeStore = create((set) => ({
-  recipes: [],
+export const useRecipeStore = create((set) => ({
+  recipes: [
+    { id: 1, title: 'Spaghetti Bolognese', description: 'Classic Italian pasta dish' },
+    { id: 2, title: 'Chicken Curry', description: 'Spicy Indian curry' },
+    { id: 3, title: 'Vegetable Stir Fry', description: 'Quick and healthy veggies' },
+  ],
   searchTerm: '',
   filteredRecipes: [],
-  
-  setRecipes: (recipes) => set({ recipes, filteredRecipes: recipes }),
-
-  setSearchTerm: (term) =>
-    set((state) => {
-      const filtered = state.recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(term.toLowerCase())
-      );
-      return {
-        searchTerm: term,
-        filteredRecipes: filtered
-      };
-    }),
+  setSearchTerm: (term) => set({ searchTerm: term }),
+  filterRecipes: () =>
+    set((state) => ({
+      filteredRecipes: state.recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      ),
+    })),
 }));
-
-export default useRecipeStore;
