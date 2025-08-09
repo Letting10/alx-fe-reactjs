@@ -2,29 +2,31 @@ import React, { useState } from "react";
 
 function Search() {
   const [query, setQuery] = useState("");
-  const [userData, setUserData] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [searched, setSearched] = useState(false); 
 
   async function fetchUserData(username) {
     try {
-      const res = await fetch(`https://api.github.com/users/${username}`);
+      const res = await fetch(`https://api.github.com/search/users?q=${username}`);
       if (!res.ok) throw new Error("User not found");
       const data = await res.json();
-      setUserData(data);
+      setUsers(data.items || []);
     } catch (error) {
       console.error(error);
-      setUserData(null);
+      setUsers([]);
     }
   }
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
+      setSearched(true); 
       fetchUserData(query);
     }
   };
 
   return (
-     <div>
+    <div>
       <form onSubmit={handleSearch}>
         <input
           type="text"
@@ -35,11 +37,17 @@ function Search() {
         <button type="submit">Search</button>
       </form>
 
-      {userData && (
-        <div>
-          <h2>{userData.login}</h2>
-          <img src={userData.avatar_url} alt={userData.login} width={100} />
-        </div>
+      {users.length > 0 ? (
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>
+              <img src={user.avatar_url} alt={user.login} width={50} />
+              <p>{user.login}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        searched && <p>Looks like we cant find the user</p> 
       )}
     </div>
   );
