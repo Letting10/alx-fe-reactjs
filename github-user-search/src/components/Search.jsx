@@ -16,15 +16,15 @@ function Search() {
     }
   }
 
-  function handleSearch(e) {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
       fetchUserData(query);
     }
-  }
+  };
 
   return (
-    <div>
+     <div>
       <form onSubmit={handleSearch}>
         <input
           type="text"
