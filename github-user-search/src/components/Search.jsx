@@ -1,86 +1,88 @@
-// src/components/Search.jsx
 import React, { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+
+const BASE = "https://api.github.com";
 
 export default function Search() {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = async (e) => {
-    e && e.preventDefault();
-    const q = query.trim();
-    if (!q) return;
+  const token = import.meta.env.VITE_APP_GITHUB_API_KEY;
 
-    setSearched(true);
+  async function fetchUserData(username) {
     setLoading(true);
-    setError(null);
     setUsers([]);
 
+    const headers = token ? { Authorization: `token ${token}` } : {};
+
     try {
-      const results = await fetchUserData(q, 5); // limit = 5
-      setUsers(results);
-    } catch (err) {
-      // Better error messages
-      if (err?.response?.status === 403) {
-        setError("GitHub rate limit reached. Try again later or set a personal token.");
-      } else {
-        setError("Looks like we cant find the user");
+      // Try exact match first
+      let res = await fetch(`${BASE}/users/${username}`, { headers });
+      if (res.ok) {
+        let details = await res.json();
+        setUsers([details]);
+        setLoading(false);
+        return;
       }
+
+      // Fallback to search API
+      res = await fetch(`${BASE}/search/users?q=${username}`, { headers });
+      const data = await res.json();
+
+      const detailedUsers = await Promise.all(
+        (data.items || []).map(async (user) => {
+          const detailRes = await fetch(user.url, { headers });
+          return await detailRes.json();
+        })
+      );
+
+      setUsers(detailedUsers);
+    } catch (error) {
+      console.error(error);
       setUsers([]);
     } finally {
       setLoading(false);
     }
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      setSearched(true);
+      fetchUserData(query.trim());
+    }
   };
 
   return (
-    <div className="search-component">
-      <form onSubmit={handleSearch} className="search-form">
+    <div>
+      <form onSubmit={handleSearch}>
         <input
-          aria-label="Search GitHub users"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search GitHub username or query..."
-          disabled={loading}
+          placeholder="Search GitHub username..."
         />
-        <button type="submit" disabled={loading}>
-          {loading ? "Searching..." : "Search"}
-        </button>
+        <button type="submit">Search</button>
       </form>
 
       {loading && <p>Loading...</p>}
 
-      {error && !loading && <p className="error">{error}</p>}
-
-      {!loading && users.length > 0 && (
-        <ul className="results-list">
+      {users.length > 0 ? (
+        <ul>
           {users.map((user) => (
-            <li key={user.id} className="result-item">
-              <img
-                src={user.avatar_url}
-                alt={`${user.login} avatar`}
-                width="64"
-                height="64"
-                style={{ borderRadius: 8 }}
-              />
-              <div className="meta">
-                <p><strong>{user.name || user.login}</strong> ({user.login})</p>
-                <p>{user.location || "No location provided"}</p>
-                <p>Repos: {user.public_repos ?? "—"}</p>
-                <a href={user.html_url} target="_blank" rel="noopener noreferrer">
-                  View Profile
-                </a>
-              </div>
+            <li key={user.id}>
+              <img src={user.avatar_url} alt={user.login} width={50} />
+              <p>{user.login}</p>
+              <p>{user.location || "No location provided"}</p>
+              <a href={user.html_url} target="_blank" rel="noopener noreferrer">
+                View Profile
+              </a>
             </li>
           ))}
         </ul>
-      )}
-
-      {!loading && searched && users.length === 0 && !error && (
-        <p>Looks like we cant find the user</p>
+      ) : (
+        searched && !loading && <p>Looks like we cant find the user</p>
       )}
     </div>
   );
