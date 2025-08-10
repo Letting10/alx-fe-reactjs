@@ -1,24 +1,32 @@
-import axios from 'axios';
+// src/services/githubService.js
+import axios from "axios";
 
-const GITHUB_API_KEY = import.meta.env.VITE_APP_GITHUB_API_KEY;
+const BASE = "https://api.github.com";
+const TOKEN = import.meta.env.VITE_APP_GITHUB_API_KEY || "";
+const HEADERS = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
 
-export const searchUsers = async (username, location, minRepos) => {
-  try {
-    let query = username ? `${username} in:login` : '';
+/**
+ * Fetch detailed user profiles from GitHub Search API.
+ * Returns an array of detailed user objects (includes location, html_url, etc.)
+ * limit: number of profiles to fetch details for (default 5)
+ */
+export async function fetchUserData(query, limit = 5) {
+  if (!query || !query.trim()) return [];
 
-    if (location) {
-      query += ` location:${location}`;
-    }
-    if (minRepos) {
-      query += ` repos:>=${minRepos}`;
-    }
+  // Search users
+  const searchRes = await axios.get(`${BASE}/search/users`, {
+    params: { q: query, per_page: limit },
+    headers: HEADERS,
+  });
 
-    const response = await axios.get(`https://api.github.com/search/users?q=${encodeURIComponent(query)}`, {
-      headers: GITHUB_API_KEY ? { Authorization: `token ${GITHUB_API_KEY}` } : {}
-    });
+  const items = (searchRes.data && searchRes.data.items) || [];
+  if (items.length === 0) return [];
 
-    return response.data.items;
-  } catch (error) {
-    throw error;
-  }
-};
+  // Fetch each user's full profile (user.url is the API endpoint)
+  const detailsPromises = items.slice(0, limit).map((u) =>
+    axios.get(u.url, { headers: HEADERS }).then((r) => r.data)
+  );
+
+  const detailed = await Promise.all(detailsPromises);
+  return detailed;
+}
