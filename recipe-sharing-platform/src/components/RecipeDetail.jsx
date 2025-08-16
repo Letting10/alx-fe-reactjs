@@ -69,16 +69,14 @@ function RecipeDetail() {
             <h2 className="text-2xl font-semibold mb-3 text-purple-700 border-b-2 border-purple-400 inline-block pb-1">
               Cooking Steps
             </h2>
-            <ol className="list-decimal list-inside text-gray-800 space-y-3 mt-2 pl-4"> {/* Left padding for list */}
-              {recipe.steps?.map((step, idx) => (
-                <li
-                  key={idx}
-                  className="bg-purple-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                >
-                  {step}
-                </li>
-              ))}
-            </ol>
+           <ol className="list-decimal list-inside text-gray-800 space-y-3 mt-2 pl-4">
+  {recipe.instructions?.map((step, idx) => (
+    <li key={idx} className="bg-purple-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+      {step}
+    </li>
+  ))}
+</ol>
+
           </div>
         </div>
       </div>
