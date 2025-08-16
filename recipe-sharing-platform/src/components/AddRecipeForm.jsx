@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 function AddRecipeForm({ onAddRecipe }) {
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
-  const [instructions, setInstructions] = useState('');
+  const [steps, setSteps] = useState('');
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -12,7 +12,7 @@ function AddRecipeForm({ onAddRecipe }) {
     if (!ingredients.trim()) newErrors.ingredients = 'Ingredients are required';
     else if (ingredients.split(',').length < 2)
       newErrors.ingredients = 'Enter at least 2 ingredients, separated by commas';
-    if (!instructions.trim()) newErrors.instructions = 'Instructions are required';
+    if (!steps.trim()) newErrors.steps = 'Steps are required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -25,15 +25,17 @@ function AddRecipeForm({ onAddRecipe }) {
       id: Date.now(),
       title: title.trim(),
       ingredients: ingredients.split(',').map((i) => i.trim()),
-      instructions: instructions.split('.').map((i) => i.trim()).filter(Boolean),
-      summary: instructions.substring(0, 100) + '...',
+      instructions: steps.split('.').map((i) => i.trim()).filter(Boolean),
+      summary: steps.substring(0, 100) + '...',
       image: 'https://via.placeholder.com/300x200',
     };
 
     onAddRecipe(newRecipe);
+
+    // Reset form
     setTitle('');
     setIngredients('');
-    setInstructions('');
+    setSteps('');
     setErrors({});
   };
 
@@ -41,6 +43,7 @@ function AddRecipeForm({ onAddRecipe }) {
     <div className="max-w-3xl mx-auto my-10 p-8 bg-white rounded-3xl shadow-xl">
       <h2 className="text-3xl font-bold mb-6 text-yellow-800">Add New Recipe</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Title */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Title</label>
           <input
@@ -54,8 +57,11 @@ function AddRecipeForm({ onAddRecipe }) {
           {errors.title && <p className="text-red-500 mt-1">{errors.title}</p>}
         </div>
 
+        {/* Ingredients */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Ingredients (comma separated)</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            Ingredients (comma separated)
+          </label>
           <textarea
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
@@ -67,19 +73,21 @@ function AddRecipeForm({ onAddRecipe }) {
           {errors.ingredients && <p className="text-red-500 mt-1">{errors.ingredients}</p>}
         </div>
 
+        {/* Steps */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Instructions</label>
+          <label className="block text-gray-700 font-medium mb-2">Steps (separate by periods)</label>
           <textarea
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            value={steps}
+            onChange={(e) => setSteps(e.target.value)}
             rows="5"
             className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 ${
-              errors.instructions ? 'border-red-500' : 'border-gray-300'
+              errors.steps ? 'border-red-500' : 'border-gray-300'
             }`}
           ></textarea>
-          {errors.instructions && <p className="text-red-500 mt-1">{errors.instructions}</p>}
+          {errors.steps && <p className="text-red-500 mt-1">{errors.steps}</p>}
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
