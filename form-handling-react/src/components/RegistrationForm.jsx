@@ -1,3 +1,4 @@
+// src/components/RegistrationForm.jsx
 import { useState } from "react";
 
 function RegistrationForm() {
@@ -8,72 +9,54 @@ function RegistrationForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = {};
-
-    if (!username) {
-      newErrors.username = "Username is required";
-    }
-    if (!email) {
-      newErrors.email = "Email is required";
-    }
-    if (!password) {
-      newErrors.password = "Password is required";
-    }
+    let newErrors = {};
+    if (!username) newErrors.username = "Username is required";
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
 
     setErrors(newErrors);
 
-    // only submit if there are no errors
     if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted:", { username, email, password });
-      // further handling logic here
+      alert("Form submitted!");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block">Username:</label>
         <input
           type="text"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="border p-2 w-full"
         />
-        {errors.username && (
-          <p className="text-red-500 text-sm">{errors.username}</p>
-        )}
+        {errors.username && <p className="text-red-500">{errors.username}</p>}
       </div>
 
       <div>
-        <label className="block">Email:</label>
         <input
           type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="border p-2 w-full"
         />
-        {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email}</p>
-        )}
+        {errors.email && <p className="text-red-500">{errors.email}</p>}
       </div>
 
       <div>
-        <label className="block">Password:</label>
         <input
           type="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="border p-2 w-full"
         />
-        {errors.password && (
-          <p className="text-red-500 text-sm">{errors.password}</p>
-        )}
+        {errors.password && <p className="text-red-500">{errors.password}</p>}
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
+      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
         Register
       </button>
     </form>
