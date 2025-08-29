@@ -3,5 +3,15 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+      babel: {
+        presets: [
+          ['@babel/preset-react', { runtime: 'automatic' }]
+        ],
+      },
+      include: /\.(js|jsx)$/, // 👈 allow JSX inside .js files
+    }),
+  ],
 })
